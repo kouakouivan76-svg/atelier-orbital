@@ -1,0 +1,430 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="stylesheet" href="css/base.css"><title>Atelier Orbital</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Chakra+Petch:wght@500;600;700&family=DM+Mono:wght@400;500&family=Lexend:wght@400;500;600&display=swap">
+</head><body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+
+
+<link rel="stylesheet" href="css/style.css">
+<canvas id="stars" aria-hidden="true"></canvas>
+<div class="stars" id="starsL" aria-hidden="true"><div class="st st1"></div><div class="st st2"></div></div>
+<div class="shoot" aria-hidden="true"></div>
+<div class="flash" id="flash" aria-hidden="true"></div>
+<div class="confetti" id="confetti" aria-hidden="true"></div>
+
+<div class="pup" id="pup" data-mood="idle">
+  <div class="pup-line" aria-hidden="true"></div>
+  <div class="pup-sway" id="pupSway">
+    <button class="pup-btn" id="pupBtn" type="button" aria-label="Cadet, la marionnette. Touchez-la pour une anecdote spatiale">
+      <svg viewBox="0 0 120 200" aria-hidden="true">
+        <defs><linearGradient id="pvg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2a4bb3"/><stop offset="1" stop-color="#0a1330"/></linearGradient></defs>
+        <rect x="24" y="4" width="72" height="7" rx="3.5" fill="#8d6b3f"/><circle cx="60" cy="7.5" r="4.5" fill="#ffc12e"/>
+        <g stroke="#8a95b5" stroke-width="1.2" fill="none"><path d="M60 8V36"/><path d="M28 10L44 100"/><path d="M92 10L76 100"/></g>
+        <g class="pbody">
+          <rect x="32" y="98" width="56" height="42" rx="10" fill="#b7c2dc"/>
+          <g class="lL"><rect x="44" y="134" width="14" height="42" rx="7" fill="#f5f8ff" stroke="#cfd8ee" stroke-width="2"/><rect x="41" y="168" width="20" height="14" rx="6" fill="#13286e"/></g>
+          <g class="lR"><rect x="62" y="134" width="14" height="42" rx="7" fill="#f5f8ff" stroke="#cfd8ee" stroke-width="2"/><rect x="59" y="168" width="20" height="14" rx="6" fill="#13286e"/></g>
+          <rect x="40" y="92" width="40" height="50" rx="15" fill="#f5f8ff" stroke="#cfd8ee" stroke-width="2"/>
+          <rect x="50" y="108" width="20" height="14" rx="3" fill="#13286e"/><circle class="led1" cx="56" cy="115" r="2.2" fill="#5fd3d6"/><circle class="led2" cx="64" cy="115" r="2.2" fill="#ffc12e"/>
+          <g class="aL"><g class="aLi"><rect x="30" y="98" width="14" height="36" rx="7" fill="#f5f8ff" stroke="#cfd8ee" stroke-width="2"/><rect x="30" y="108" width="14" height="5" fill="#ffc12e"/><circle cx="37" cy="138" r="8" fill="#ffc12e"/></g></g>
+          <g class="aR"><g class="aRi"><rect x="76" y="98" width="14" height="36" rx="7" fill="#f5f8ff" stroke="#cfd8ee" stroke-width="2"/><rect x="76" y="108" width="14" height="5" fill="#ffc12e"/><circle cx="83" cy="138" r="8" fill="#ffc12e"/></g></g>
+          <g class="head">
+            <ellipse cx="60" cy="91" rx="23" ry="5" fill="#cfd8ee"/>
+            <circle cx="60" cy="62" r="30" fill="#f5f8ff" stroke="#cfd8ee" stroke-width="2"/>
+            <line x1="80" y1="38" x2="86" y2="26" stroke="#8a95b5" stroke-width="2"/><circle class="led1" cx="86" cy="25" r="3.4" fill="#ffc12e"/>
+            <ellipse class="visor" cx="60" cy="64" rx="22" ry="18"/>
+            <path d="M44 56Q50 47 60 46" stroke="#fff" stroke-opacity=".35" stroke-width="3" fill="none" stroke-linecap="round"/>
+            <g class="eyes" fill="#fff"><ellipse cx="52" cy="62" rx="3.2" ry="4.4"/><ellipse cx="68" cy="62" rx="3.2" ry="4.4"/></g>
+            <g class="cheek" fill="#ff9aa8"><circle cx="46" cy="70" r="3.2"/><circle cx="74" cy="70" r="3.2"/></g>
+            <g class="mouth" stroke="#fff" stroke-width="2.4" fill="none" stroke-linecap="round">
+              <path class="m-smile" d="M53 72Q60 79 67 72"/>
+              <ellipse class="m-o" cx="60" cy="75" rx="3.4" ry="4.2" fill="#fff" stroke="none"/>
+              <path class="m-frown" d="M53 78Q60 71 67 78"/>
+            </g>
+          </g>
+        </g>
+      </svg>
+    </button>
+  </div>
+  <div class="pup-bubble" id="pupBubble" role="status" aria-live="polite"></div>
+</div>
+
+<div class="launch" id="launch" hidden>
+  <button class="link l-skip" id="lSkip" type="button">Passer</button>
+  <div class="l-name" id="lName"></div>
+  <div class="l-count" id="lCount">3</div>
+  <div class="l-smoke" aria-hidden="true"></div>
+  <svg class="l-rocket" viewBox="0 0 70 140" aria-hidden="true">
+    <g class="l-flame"><path d="M26 96Q35 146 44 96Z" fill="#ffc12e"/><path d="M30 96Q35 126 40 96Z" fill="#cc2f2a"/></g>
+    <path d="M20 70L4 106L20 96Z" fill="#ffc12e"/><path d="M50 70L66 106L50 96Z" fill="#ffc12e"/>
+    <path d="M35 4C50 24 52 54 50 96H20C18 54 20 24 35 4Z" fill="#f5f8ff" stroke="#cfd8ee" stroke-width="2"/>
+    <circle cx="35" cy="44" r="8" fill="#1d3a8a" stroke="#ffc12e" stroke-width="2.5"/>
+    <rect x="26" y="94" width="18" height="6" rx="2" fill="#13286e"/>
+  </svg>
+</div>
+
+<header class="sh-top">
+  <div class="sh-in">
+    <button class="sh-brand" id="brandBtn" type="button" aria-label="Retour au programme">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="7.5" fill="none" stroke="currentColor" stroke-width="1.6"/><ellipse cx="12" cy="12" rx="11" ry="4.2" fill="none" stroke="currentColor" stroke-width="1.2" transform="rotate(-24 12 12)" opacity=".7"/><circle cx="20" cy="7.2" r="2.3" fill="#ff7b3a"/></svg>
+      <span>Atelier Orbital</span>
+    </button>
+    <ol class="sh-steps" id="steps">
+      <li data-s="hub">Programme</li><li data-s="lab">Atelier</li><li data-s="traj">Trajectoire</li><li data-s="fly">Vol</li><li data-s="crew">Équipage</li><li data-s="end">Bilan</li>
+    </ol>
+    <div class="sh-mini" id="stepMini"></div>
+    <div class="sh-r">
+      <span class="sh-credits" id="credits"></span>
+      <button class="sh-link" id="fxBtn" type="button" aria-pressed="true">Effets : oui</button>
+      <button class="sh-link" id="learnBtn" type="button">Apprendre</button>
+    </div>
+  </div>
+</header>
+
+<main class="sh-wrap">
+<div class="ao" id="aoRoot">
+
+  <section id="h-hub" class="screen">
+    <div class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">NASA Space Apps Challenge 2026 · Conception de mission et simulateur d'équipage</p>
+        <h1>Concevez la mission. <em>Commandez l'équipage.</em></h1>
+        <p class="lead">Une seule campagne en six chapitres. À l'Atelier, vous assemblez le vaisseau et passez le Go/No-Go, puis vous pilotez le lancement et la croisière. Une fois arrivé, votre équipage embarque sur le vaisseau que vous avez conçu : énergie, ergols, blindage et instruments choisis à l'Atelier changent les règles de la mission.</p>
+        <div class="row">
+          <button class="btn pri" id="hubCta" type="button">Commencer la campagne</button>
+          <button class="btn" id="hubLearn" type="button">Comprendre les contraintes</button>
+        </div>
+      </div>
+      <aside class="dossier" aria-label="Exemple de dossier de mission">
+        <div class="dossier-h"><span class="eyebrow">Dossier AO-01 · exemple</span><span class="eyebrow" id="demoTitle"></span></div>
+        <div class="dossier-b"><ul class="poll" id="demoPoll"></ul></div>
+        <div class="dossier-f" id="demoFoot"></div>
+      </aside>
+    </div>
+    <div class="facts">
+      <div class="fact"><span class="u">1 · Concevoir</span><span class="k">9 contraintes à tenir</span><p>Masse, budget, énergie, Δv, poussée, durée, science, thermique et liaison radio, plus radiations et fenêtre de lancement.</p></div>
+      <div class="fact"><span class="u">2 · Voler</span><span class="k">Une décision toutes les deux phases</span><p>Imprévus et opportunités en vol : chaque choix laisse un effet durable sur la fiabilité, la marge de Δv ou la science.</p></div>
+      <div class="fact"><span class="u">3 · Commander</span><span class="k">L'équipage hérite de votre vaisseau</span><p>Air, eau, énergie, moral et radiations au jour le jour, avec les bonus (ou les défauts) de votre conception.</p></div>
+    </div>
+
+    <div class="sec" id="routeSec">
+      <div class="sec-h"><h2>Campagne</h2><span class="eyebrow" id="progress"></span></div>
+      <div class="hubhead">
+        <div class="sec-h"><h3>Difficulté</h3><span class="eyebrow">Commune à l'Atelier et à l'équipage</span></div>
+        <div class="dfs" id="dfs" role="radiogroup" aria-label="Difficulté"></div>
+      </div>
+      <div class="route" id="route" style="display:flex;flex-direction:column;gap:16px"></div>
+      <div class="row"><button class="sh-link" id="unlockAll" type="button">Tout débloquer</button><button class="sh-link" id="resetAll" type="button">Réinitialiser la campagne</button><span class="hint" id="resetMsg"></span></div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-h"><h2>Recherche et développement</h2><span class="eyebrow" id="credits2"></span></div>
+      <p class="hint">Les crédits gagnés à l'Atelier comme avec l'équipage servent à améliorer les deux.</p>
+      <div class="sub-h">Atelier : conception et lancement</div>
+      <div class="shop2" id="shopAO"></div>
+      <div class="sub-h">Équipage : vie à bord</div>
+      <div class="shop2" id="shopMC"></div>
+    </div>
+  </section>
+
+  <section id="h-learn" class="screen" hidden>
+    <div class="sec">
+      <p class="eyebrow">Ce que le jeu simule</p>
+      <h2>Apprendre</h2>
+      <p class="lead">Les notions derrière les jauges, de la conception du vaisseau à la vie de l'équipage.</p>
+    </div>
+    <h3>Concevoir et lancer</h3>
+    <div class="terms">
+      <div class="term"><div><h3>Variation de vitesse (Δv)</h3></div><div><p>La monnaie d'une mission. Quitter l'orbite terrestre, freiner à l'arrivée ou se poser coûte un certain Δv, en km/s. Le vaisseau doit en disposer, avec une marge pour l'imprévu : en vol, corriger la trajectoire consomme cette marge.</p><p class="in">Dans le jeu : jauge Δv, marge et décisions de navigation.</p></div></div>
+      <div class="term"><div><h3>Équation de la fusée</h3></div><div><p>Pour gagner du Δv, il faut des ergols, mais ces ergols pèsent aussi et doivent être poussés. La masse nécessaire grimpe donc de façon exponentielle avec le Δv visé.</p><div class="formula">Δv = Isp × g₀ × ln(m₀ / m_f)</div><p class="in">Dans le jeu : curseur d'ergols et Calcul auto.</p></div></div>
+      <div class="term"><div><h3>Impulsion spécifique et poussée</h3></div><div><p>Un moteur chimique stockable tourne autour de 320 s, un cryogénique autour de 450 s, un ionique autour de 3 000 s. Mais la poussée du moteur ionique est très faible : voyage long, et atterrissage lunaire impossible.</p><p class="in">Dans le jeu : choix de la propulsion, durée maximale.</p></div></div>
+      <div class="term"><div><h3>Énergie</h3></div><div><p>L'éclairement solaire diminue avec le carré de la distance au Soleil : Vénus reçoit environ 1,9 fois plus que la Terre, Mars 43 %, Jupiter 3,7 %. Un générateur nucléaire produit la même puissance partout, mais coûte plus cher.</p><p class="in">Dans le jeu : jauge Énergie.</p></div></div>
+      <div class="term"><div><h3>Thermique</h3></div><div><p>Un vaisseau doit rester entre des limites de température. Isolation, radiateurs, chauffage ou bouclier thermique : chaque destination demande le sien. Un système inadapté fait chuter la fiabilité, voire empêche le lancement.</p><p class="in">Dans le jeu : choix du contrôle thermique.</p></div></div>
+      <div class="term"><div><h3>Liaison radio</h3></div><div><p>Plus on est loin, plus le signal s'affaiblit et plus il arrive tard. Pour renvoyer toutes les données, il faut une antenne plus grande et un débit suffisant. Une antenne gourmande consomme aussi de l'énergie.</p><p class="in">Dans le jeu : antenne, relais, stations au sol.</p></div></div>
+      <div class="term"><div><h3>Radiations</h3></div><div><p>Plus le voyage est long, plus l'électronique est exposée aux particules solaires. Un blindage ou une électronique durcie réduisent le risque, et la redondance limite les dégâts d'une panne.</p><p class="in">Dans le jeu : protection et fiabilité.</p></div></div>
+      <div class="term"><div><h3>Fenêtre de lancement et trajectoire</h3></div><div><p>Les planètes ne sont alignées idéalement qu'à certaines dates. Partir plus tôt ou plus tard coûte du Δv. Une trajectoire économe ou une assistance gravitationnelle économise du carburant au prix d'un voyage plus long.</p><p class="in">Dans le jeu : fenêtre et profil de vol.</p></div></div>
+    </div>
+    <h3>Vivre à bord</h3>
+    <div class="terms">
+      <div class="term"><div><h3>L'air</h3></div><div><p>Chaque astronaute consomme environ 0,84 kg d'oxygène par jour et rejette du CO₂, qu'un filtre doit retirer. Une partie de l'oxygène est récupérée à partir de ce CO₂, mais les machines demandent de l'électricité.</p><p class="in">Dans le jeu : jauge Oxygène et recyclage selon le mode d'énergie.</p></div></div>
+      <div class="term"><div><h3>L'eau</h3></div><div><p>L'eau n'est jamais jetée : sueur, urine et humidité de l'air sont récupérées. Sur la Station spatiale, le taux de récupération dépasse 90 %. Moins d'énergie pour le recycleur, c'est plus d'eau puisée dans les réserves.</p><p class="in">Dans le jeu : jauge Eau, mode Éco, amélioration du recycleur.</p></div></div>
+      <div class="term"><div><h3>L'énergie</h3></div><div><p>Les panneaux solaires produisent moins loin du Soleil : l'éclairement baisse avec le carré de la distance, et Mars reçoit environ 43 % de ce que reçoit la Terre. Une batterie encaisse les creux, comme une éclipse ou une tempête de poussière.</p><p class="in">Dans le jeu : jauge Batterie et choix du mode.</p></div></div>
+      <div class="term"><div><h3>La nuit lunaire</h3></div><div><p>Un jour lunaire dure environ 29 jours terrestres : près de 14 jours de lumière, puis près de 14 jours d'obscurité. Sans soleil, il faut vivre sur la batterie ou sur une source nucléaire.</p><p class="in">Dans le jeu : mission « Séjour sur la Lune », jours 8 à 11.</p></div></div>
+      <div class="term"><div><h3>Les radiations</h3></div><div><p>Hors de la protection du champ magnétique terrestre, l'équipage reçoit un flux permanent de particules. Sur Mars, la surface en arrête une partie : environ 0,67 mSv par jour mesurés par Curiosity. Une éruption solaire ajoute une dose brutale, d'où les abris protégés par l'eau et les provisions.</p><p class="in">Dans le jeu : jauge Dose, événement « éruption solaire », blindage amélioré.</p></div></div>
+      <div class="term"><div><h3>Le corps</h3></div><div><p>Sans pesanteur, muscles et os s'affaiblissent. Deux heures d'exercice par jour limitent les dégâts. Le travail au-delà de 7 heures par jour fatigue aussi, et la fatigue fait baisser le rendement.</p><p class="in">Dans le jeu : jauge Santé, heures d'exercice, médecin à bord.</p></div></div>
+      <div class="term"><div><h3>Les ergols</h3></div><div><p>Atterrir, décoller, freiner pour se mettre en orbite ou éviter un débris demande de pousser, donc de brûler des ergols. Ils ne se rachètent pas : chaque manœuvre se paie sur une réserve fixe.</p><p class="in">Dans le jeu : jauge Ergols, manœuvres d'atterrissage, de décollage et d'évitement.</p></div></div>
+      <div class="term"><div><h3>Les pièces de rechange</h3></div><div><p>Loin de la Terre, on ne commande pas de pièce. Les équipages emportent des rechanges et savent réparer eux-mêmes. Une réparation sans pièce a bien moins de chances de réussir.</p><p class="in">Dans le jeu : jauge Pièces, chargement des soutes, ingénieur à bord.</p></div></div>
+      <div class="term"><div><h3>La poussière</h3></div><div><p>La poussière lunaire est abrasive et colle partout, comme l'ont constaté les équipages d'Apollo. Sur Mars, les tempêtes de poussière peuvent masquer le Soleil pendant des semaines et priver les panneaux de lumière.</p><p class="in">Dans le jeu : jauge Poussière sur les missions de surface, événement de poussière.</p></div></div>
+      <div class="term"><div><h3>La distance de communication</h3></div><div><p>Un message radio vers la Lune met environ 1,3 seconde. Vers Mars, il met de 3 à 22 minutes selon les positions. Pour une décision urgente, l'équipage doit trancher seul.</p><p class="in">Dans le jeu : événement « décision autonome ».</p></div></div>
+      <div class="term"><div><h3>Le moral de l'équipe</h3></div><div><p>Un équipage isolé a besoin de repos, de contacts et de petits événements. Un moral bas ralentit le travail scientifique et rend les erreurs plus probables.</p><p class="in">Dans le jeu : jauge Moral, heures de repos, cours en direct pour des écoles.</p></div></div>
+    </div>
+    <p class="fine">Les chiffres du jeu sont simplifiés et inspirés de missions réelles. Sources : <a href="https://science.nasa.gov" target="_blank" rel="noopener">science.nasa.gov</a> et <a href="https://www.spaceappschallenge.org/2026/" target="_blank" rel="noopener">spaceappschallenge.org</a>.</p>
+    <div class="navrow"><button class="btn" id="learnBack" type="button">Retour</button></div>
+  </section>
+
+<div id="a-work" hidden>
+    <div class="work">
+      <div class="main">
+
+        <section id="a-s-lab" class="screen" hidden>
+          <div class="sec">
+            <p class="eyebrow" id="a-labEyebrow"></p>
+            <h2>Atelier de conception</h2>
+            <p class="lead" id="a-labLead"></p>
+          </div>
+          <div class="callout cons" id="a-consBox" hidden></div>
+          <div class="callout" data-advice></div>
+
+          <div class="sec">
+            <div class="sec-h"><h3>Lanceur</h3><span class="eyebrow">Capacité en orbite basse</span></div>
+            <div class="group" id="a-g-launcher" role="radiogroup" aria-label="Lanceur"></div>
+          </div>
+          <div class="sec">
+            <div class="sec-h"><h3>Propulsion et énergie</h3><span class="eyebrow">Δv, poussée, watts</span></div>
+            <div class="sub-h">Propulsion</div>
+            <div class="group" id="a-g-prop" role="radiogroup" aria-label="Propulsion"></div>
+            <div class="sub-h">Énergie</div>
+            <div class="group" id="a-g-power" role="radiogroup" aria-label="Énergie"></div>
+          </div>
+          <div class="sec">
+            <div class="sec-h"><h3>Environnement</h3><span class="eyebrow" id="a-envNote"></span></div>
+            <div class="sub-h">Contrôle thermique</div>
+            <div class="group" id="a-g-therm" role="radiogroup" aria-label="Thermique"></div>
+            <div class="sub-h">Antenne</div>
+            <div class="group" id="a-g-ant" role="radiogroup" aria-label="Antenne"></div>
+            <div class="sub-h">Protection et fiabilité</div>
+            <div class="group" id="a-g-prot"></div>
+          </div>
+          <div class="sec">
+            <div class="sec-h"><h3>Instruments scientifiques</h3><span class="eyebrow" id="a-sciTarget"></span></div>
+            <div class="group" id="a-g-inst"></div>
+          </div>
+          <div class="sec">
+            <div class="sec-h"><h3>Charges annexes</h3><span class="eyebrow" id="a-sideNote"></span></div>
+            <div class="group" id="a-g-side"></div>
+          </div>
+          <div class="navrow">
+            <button class="btn" data-shell="hub">Retour au programme</button>
+            <button class="btn pri" data-go="traj">Trajectoire et carburant</button>
+          </div>
+        </section>
+
+        <section id="a-s-traj" class="screen" hidden>
+          <div class="sec">
+            <p class="eyebrow" id="a-trajEyebrow"></p>
+            <h2>Trajectoire et carburant</h2>
+            <p class="lead">Choisissez la fenêtre de lancement et le profil de vol, réglez les ergols, puis passez le sondage Go/No-Go.</p>
+          </div>
+          <div class="diagram">
+            <svg id="a-trajSvg" viewBox="0 0 640 220" role="img" aria-label="Schéma de la trajectoire de la Terre à la destination"></svg>
+            <div class="dstats" id="a-trajStats"></div>
+          </div>
+          <div class="sec">
+            <div class="sec-h"><h3>Fenêtre de lancement</h3><span class="eyebrow">Δv, coût et risque</span></div>
+            <div class="group" id="a-g-win" role="radiogroup" aria-label="Fenêtre de lancement"></div>
+          </div>
+          <div class="sec">
+            <div class="sec-h"><h3>Profil de vol</h3><span class="eyebrow">Δv contre durée</span></div>
+            <div class="group" id="a-trajOpts" role="radiogroup" aria-label="Profil de vol"></div>
+          </div>
+          <div class="sec slider">
+            <div class="sec-h"><h3>Ergols</h3><span class="eyebrow" id="a-fuelShare"></span></div>
+            <div class="slider-top"><span class="big" id="a-fuelVal"></span><button class="btn" id="a-autoFuel" type="button">Calcul auto</button></div>
+            <input type="range" id="a-fuel" min="0" max="1000" step="10" value="0" aria-label="Masse d'ergols en kilogrammes">
+            <p class="fine">Calcul auto vise le Δv requis avec 5 % de marge, dans la limite du lanceur. Plus la marge est grande, plus les manœuvres de vol sont sûres.</p>
+          </div>
+          <div class="callout" data-advice></div>
+          <div class="sec">
+            <div class="sec-h"><h3>Sondage Go / No-Go</h3><span class="eyebrow" id="a-pollCount"></span></div>
+            <div class="dossier"><ul class="poll" id="a-poll"></ul></div>
+            <div class="prob"><span class="big num" id="a-pTotal"></span><small>Réussite estimée du vol, sans compter vos décisions en route.</small></div>
+            <div class="risk" id="a-risk"></div>
+          </div>
+          <div class="navrow">
+            <button class="btn" data-go="lab">Retour à l'atelier</button>
+            <button class="btn pri" id="a-launchBtn" type="button">Lancer la mission</button>
+          </div>
+        </section>
+
+      </div>
+      <aside class="meters" aria-label="Jauges de la mission">
+        <div class="mh eyebrow">Tableau de bord</div>
+        <div class="mgrid" id="a-mgrid"></div>
+      </aside>
+    </div>
+  </div>
+
+  
+<section id="a-s-fly" class="screen" hidden>
+    <div class="sec">
+      <div class="flight-top"><p class="eyebrow" id="a-flEyebrow"></p><div class="count" id="a-count" style="font-size:1.6rem"></div></div>
+    </div>
+    <div class="scene" id="a-scene" data-ground="0">
+      <svg class="sc" id="a-scSvg" viewBox="0 0 640 220" preserveAspectRatio="xMidYMid slice" aria-hidden="true"></svg>
+      <div class="sc-bar sc-bt"></div><div class="sc-bar sc-bb"></div>
+      <div class="sc-title" id="a-scTitle"></div>
+      <div class="sc-cap" id="a-scCap"></div>
+    </div>
+    <ol class="stages mini" id="a-stages"></ol>
+    <div id="a-card" aria-live="polite"></div>
+    <ul class="log" id="a-log"></ul>
+    <div class="navrow">
+      <button class="btn" id="a-skipBtn" type="button">Passer l'animation</button>
+      <button class="btn pri" id="a-nextBtn" type="button">Phase suivante</button>
+    </div>
+  </section>
+<section id="a-s-inter" class="screen" hidden>
+  <div class="sec">
+    <p class="eyebrow" id="a-iEye"></p>
+    <h2 id="a-iTitle"></h2>
+    <p class="lead" id="a-iLead"></p>
+  </div>
+  <div class="iart" id="a-iArt"><svg id="a-iSvg" viewBox="0 0 600 160" preserveAspectRatio="xMidYMid slice" aria-hidden="true"></svg><div class="itag" id="a-iTag"></div></div>
+  <div id="a-iPick" class="screen" style="gap:20px">
+    <div class="opts" id="a-iOpts" role="radiogroup" aria-label="Options de l'Atelier"></div>
+    <div class="panel"><div class="sec-h"><h3>Contrôle Go / No-Go</h3><span class="eyebrow" id="a-iPct"></span></div><ul class="poll" id="a-iPoll"></ul></div>
+    <div class="row"><button class="btn pri" id="a-iGo" disabled>Choisissez une option</button></div>
+  </div>
+  <div class="beat opp" id="a-iRes" hidden></div>
+</section>
+<section id="a-s-res" class="screen" hidden>
+    <div class="sec"><p class="eyebrow" id="a-resEyebrow"></p><div class="rating" id="a-rating"></div></div>
+    <div class="score"><span class="big num" id="a-scoreBig">0</span><span class="of">/ 100</span></div>
+    <p class="lead" id="a-resLead"></p>
+    <div class="brk" id="a-brk"></div>
+    <div class="two">
+      <div><h3>Objectifs bonus</h3><ul class="bonus" id="a-bonus"></ul></div>
+      <div><h3>Récompenses</h3><div class="reward"><span class="credit" id="a-rwd"></span></div><p class="fine" id="a-rwdNote"></p></div>
+    </div>
+    <div class="two">
+      <div><h3>Points forts</h3><ul class="pts" id="a-good"></ul></div>
+      <div><h3>À améliorer</h3><ul class="pts" id="a-better"></ul></div>
+    </div>
+    <div><h3>Journal des décisions</h3><ul class="hist" id="a-hist"></ul></div>
+    <div class="panel" id="a-endChain" hidden></div>
+    <p class="fine" id="a-best"></p>
+    <div class="navrow">
+      <div class="row">
+        <button class="btn pri" id="a-againBtn" type="button">Rejouer avec ces choix</button>
+        <button class="btn" data-shell="hub">Retour au programme</button>
+      </div>
+      <button class="btn" id="a-copyBtn" type="button">Copier le résumé</button>
+    </div>
+    <p class="fine" id="a-copyMsg" aria-live="polite"></p>
+  </section>
+</div>
+<div class="mc" id="mcRoot" hidden>
+<section id="c-s-brief" class="screen" hidden>
+    <div class="sec">
+      <p class="eyebrow" id="c-bEyebrow"></p>
+      <h2 id="c-bTitle"></h2>
+      <p class="lead" id="c-bStory"></p>
+      <div class="tags" id="c-bNotes"></div>
+    </div>
+    <div class="sec" id="c-bVessel" hidden></div>
+    <div class="sec">
+      <div class="sec-h"><h3>Équipage</h3><span class="counter" id="c-bCrewC"></span></div>
+      <div class="cards" id="c-bCrew"></div>
+    </div>
+    <div class="sec">
+      <div class="sec-h"><h3>Chargement des soutes</h3><span class="counter" id="c-bLoadC"></span></div>
+      <div class="panel"><div id="c-bLoad"></div><div class="row"><button class="btn sm" id="c-loadRec" type="button">Chargement conseillé</button></div></div>
+    </div>
+    <div class="sec">
+      <div class="sec-h"><h3>Missions annexes</h3><span class="counter" id="c-bSideC"></span></div>
+      <p class="fine">Optionnelles. Elles demandent des heures de travail et de l'énergie, et rapportent des points et des crédits.</p>
+      <div class="cards" id="c-bSide"></div>
+    </div>
+    <button type="button" class="switch" id="c-hintSwitch" role="switch" aria-checked="true"><span class="box"></span><span><b>Conseils du CAPCOM</b><span class="d">Le centre de contrôle commente vos choix avant la validation.</span></span></button>
+    <div class="navrow"><button class="btn" data-shell="hub">Retour au programme</button><div class="row"><span class="fine" id="c-bBlock"></span><button class="btn pri" id="c-startBtn" type="button">Décollage</button></div></div>
+  </section>
+
+<section id="c-s-play" class="screen" hidden>
+    <div class="statusbar">
+      <div><p class="eyebrow" id="c-playEyebrow"></p><div class="day" id="c-dayTitle"></div></div>
+      <div class="prog" id="c-prog" aria-hidden="true"></div>
+    </div>
+    <div class="scene" id="c-scene" data-mission="lune" data-mode="std" role="img" aria-label="Scène animée de la mission">
+      <svg class="sc" id="c-scSvg" viewBox="0 0 600 160" preserveAspectRatio="xMidYMid slice" aria-hidden="true"></svg>
+      <div class="sc-bar sc-bt"></div><div class="sc-bar sc-bb"></div>
+      <div class="sc-title" id="c-scTitle"></div>
+      <div class="sc-cap" id="c-scCap"></div>
+    </div>
+    <div class="panel">
+      <div class="sec-h"><h3>Tableau de bord</h3><span class="eyebrow" id="c-sciLine"></span></div>
+      <div class="mgrid" id="c-meters"></div>
+      <div class="sides" id="c-sideBox" hidden></div>
+      <div class="fxbox" id="c-fxBox" hidden></div>
+    </div>
+
+    <div id="c-planView" class="screen">
+      <div id="c-beatBox" class="evt beat" hidden></div>
+      <div id="c-evtBox" class="evt" hidden></div>
+      <div id="c-capcom" class="capcom" hidden><span class="who">CAPCOM</span><p id="c-capText"></p></div>
+      <div class="panel">
+        <div class="sec-h"><h3>Mode d'énergie</h3><span class="eyebrow" id="c-powerLine"></span></div>
+        <div class="opts" id="c-modes" role="radiogroup" aria-label="Mode d'énergie"></div>
+      </div>
+      <div class="panel">
+        <div class="sec-h"><h3>Emploi du temps de l'équipage</h3><span class="left" id="c-hoursLeft"></span></div>
+        <div class="chips" id="c-presets"></div>
+        <div class="hours" id="c-hours"></div>
+      </div>
+      <div class="panel">
+        <div class="sec-h"><h3>Prévision</h3><span class="eyebrow" id="c-projNote"></span></div>
+        <div class="proj" id="c-proj"></div>
+      </div>
+      <div class="navrow"><span class="fine" id="c-blocker"></span><button class="btn pri" id="c-validate" type="button">Valider</button></div>
+    </div>
+
+    <div id="c-reportView" class="screen" hidden>
+      <div class="panel">
+        <div class="sec-h"><h3>Rapport</h3><span class="eyebrow" id="c-repEyebrow"></span></div>
+        <ul class="report-lines" id="c-repLines"></ul>
+        <div class="learned" id="c-repEdu" hidden></div>
+        <div id="c-repEffBox" hidden><h3>Effets de vos choix</h3><ul class="eff" id="c-repEff"></ul></div>
+        <div class="proj" id="c-repDelta"></div>
+      </div>
+      <div class="navrow"><span></span><button class="btn pri" id="c-nextBtn" type="button">Suite</button></div>
+    </div>
+  </section>
+
+<section id="c-s-end" class="screen" hidden>
+    <div class="sec"><p class="eyebrow" id="c-endEyebrow"></p><div class="rating" id="c-rating"></div></div>
+    <div class="score"><span class="big num" id="c-scoreBig">0</span><span class="of">/ 100</span><span class="stars" id="c-endStars" aria-label="Médailles"></span></div>
+    <p class="lead" id="c-endLead"></p>
+    <div class="reward" id="c-reward"></div>
+    <div class="brk" id="c-brk"></div>
+    <div class="panel" id="c-endSides" hidden></div>
+    <div class="two">
+      <div><h3>Ce qui a bien marché</h3><ul class="pts" id="c-good"></ul></div>
+      <div><h3>À améliorer</h3><ul class="pts" id="c-better"></ul></div>
+    </div>
+    <div class="panel" id="c-endChain" hidden></div>
+    <p class="fine" id="c-best"></p>
+    <div class="navrow">
+      <div class="row"><button class="btn pri" data-shell="hub">Retour au programme</button><button class="btn" id="c-againBtn" type="button">Rejouer cette mission</button></div>
+      <button class="btn" id="c-copyBtn" type="button">Copier le résumé</button>
+    </div>
+    <p class="fine" id="c-copyMsg" aria-live="polite"></p>
+  </section>
+
+<section id="c-s-inter" class="screen" hidden>
+  <div class="statusbar"><div><p class="eyebrow" id="c-iEye"></p><div class="day" id="c-iTitle"></div></div></div>
+  <div class="scene" id="c-iScene" data-mission="lune" data-mode="std" role="img" aria-label="Scène de la cabine">
+    <svg class="sc" id="c-iSvg" viewBox="0 0 600 160" preserveAspectRatio="xMidYMid slice" aria-hidden="true"></svg>
+    <div class="sc-bar sc-bt"></div><div class="sc-bar sc-bb"></div>
+    <div class="sc-title" id="c-iScTitle"></div>
+    <div class="sc-cap" id="c-iCap"></div>
+  </div>
+  <div id="c-iBox" class="evt"></div>
+  <div id="c-iRes" class="evt" hidden></div>
+</section>
+</div>
+
+</main>
+
+<script src="js/main.js"></script>
+</body></html>
